@@ -2,13 +2,19 @@ package main
 
 import (
 	"context"
+	"crypto/ecdsa"
 	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"golang.org/x/crypto/sha3"
 	"main/token"
 	"math"
 	"math/big"
+	"os"
 	"time"
 )
 
@@ -108,4 +114,64 @@ func main() {
 	fmt.Println("decimal: ", decimal)
 	fmt.Println("tokenBalance: ", tokenBalance)
 	fmt.Println("bigFBalance: ", bigFBalance)
+
+	// 生成新钱包
+	privateKey, err := crypto.GenerateKey()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	privateKeyBytes := crypto.FromECDSA(privateKey)
+	fmt.Println("privateKeyHexStr: ", hexutil.Encode(privateKeyBytes)[2:])
+
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		fmt.Println("error casting public key to ECDSA")
+		return
+	}
+
+	// 剥离了 0x 和前 2 个字符 04，它始终是 EC 前缀，不是必需的
+	publicKeyBytes := crypto.FromECDSAPub(publicKeyECDSA)
+	fmt.Println("publicKeyHexStr: ", hexutil.Encode(publicKeyBytes)[4:])
+	// public key 转 public address
+	pubAddress := crypto.PubkeyToAddress(*publicKeyECDSA).Hex()
+	fmt.Println("pubAddress: ", pubAddress)
+
+	// 公共地址其实就是公钥的 Keccak-256 哈希，然后我们取最后 40 个字符（20 个字节）并用“0x”作为前缀。 以下是使用 golang.org/x/crypto/sha3 的 Keccak256 函数手动完成的方法。
+	hash := sha3.NewLegacyKeccak256()
+	hash.Write(publicKeyBytes[1:])
+	fmt.Println("hash", hexutil.Encode(hash.Sum(nil)[12:]))
+
+	//createKs()
+	importKs()
+}
+
+func createKs() {
+	ks := keystore.NewKeyStore("./keystore", keystore.StandardScryptN, keystore.StandardScryptP)
+	password := "password"
+	account, err := ks.NewAccount(password)
+	if err != nil {
+		return
+	}
+	fmt.Println("account: ", account.Address.Hex())
+}
+
+func importKs() {
+	file := "./keystore/UTC--2024-07-17T10-17-58.435896000Z--fb770dad18a7b4044de3b7db33b3e4882a10400e"
+	ks := keystore.NewKeyStore("./keystore", keystore.StandardScryptN, keystore.StandardScryptP)
+	jsonBytes, err := os.ReadFile(file)
+	if err != nil {
+		fmt.Println(err)
+		//return
+	}
+	password := "password"
+	account, err := ks.Import(jsonBytes, password, password)
+	if err != nil {
+		fmt.Println(err)
+		//return
+	}
+	fmt.Println("account: ", account.Address.Hex()) // should be 0xfB770dad18A7b4044de3b7db33b3e4882A10400e
+
 }
