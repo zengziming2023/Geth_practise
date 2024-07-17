@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"main/token"
 	"math"
 	"math/big"
 	"time"
@@ -33,7 +35,7 @@ func main() {
 	fmt.Println("address: ", address.Bytes())
 
 	// nil 表示最新区块
-	balance, err := client.BalanceAt(context.Background(), address, big.NewInt(5532992)) // nil
+	balance, err := client.BalanceAt(context.Background(), address, nil) // nil big.NewInt(5532992)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -61,4 +63,49 @@ func main() {
 		return
 	}
 	fmt.Println("pendingBalanceAt: ", pendingBalanceAt)
+
+	// 代币token 余额
+	// Golem (GNT) Address
+
+	//solc --abi -o . erc20.sol
+	// go get -u github.com/ethereum/go-ethereum/cmd/abigen
+	//abigen --abi=ERC20.abi --pkg=token --out=erc20.go
+
+	// 0xa74476443119A942dE498590Fe1f2454d7D4aC0d 是合约地址
+	GNT_CONTRACT_ADDR := "0xa74476443119A942dE498590Fe1f2454d7D4aC0d"
+	GNX_CONTRACT_ADDR := "0x6ec8a24cabdc339a06a172f8223ea557055adaa5"
+	_ = GNT_CONTRACT_ADDR
+	contractAddr := GNX_CONTRACT_ADDR
+	tokenContractAddr := common.HexToAddress(contractAddr)
+	newToken, err := token.NewToken(tokenContractAddr, client)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	address = common.HexToAddress("0x0536806df512d6cdde913cf95c9886f65b1d3462")
+	tokenBalance, err := newToken.BalanceOf(&bind.CallOpts{}, address)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	name, err := newToken.Name(&bind.CallOpts{})
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	symbol, err := newToken.Symbol(&bind.CallOpts{})
+	decimal, err := newToken.Decimals(&bind.CallOpts{})
+
+	fbal := new(big.Float)
+	fbal.SetString(tokenBalance.String())
+	bigFBalance := new(big.Float).Quo(fbal, big.NewFloat(math.Pow10(int(decimal))))
+
+	fmt.Println("name: ", name)
+	fmt.Println("symbol: ", symbol)
+	fmt.Println("decimal: ", decimal)
+	fmt.Println("tokenBalance: ", tokenBalance)
+	fmt.Println("bigFBalance: ", bigFBalance)
 }
