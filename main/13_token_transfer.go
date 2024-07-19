@@ -12,6 +12,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/golang/glog"
 	"golang.org/x/crypto/sha3"
+	"main/main/constant"
 	"math"
 	"math/big"
 )
@@ -24,13 +25,13 @@ func main() {
 
 	glog.Info("Starting token Transfer...")
 	defer glog.Info("Stopping token Transfer...")
-	client, err := ethclient.Dial("https://sepolia.infura.io/v3/e732e9f17ce2413c884fa5b4a6960ee3")
+	client, err := ethclient.Dial(constant.SepoliaTest)
 	if err != nil {
 		glog.Info("dial error: ", err)
 	}
 
 	// get privateKey
-	privateKey, err := crypto.HexToECDSA("7303d6deacbdc533d92df1a404517daa0897e4ca9669787f6f7ffad5caf5aef9")
+	privateKey, err := crypto.HexToECDSA(constant.PrivateKey)
 	if err != nil {
 		glog.Error("HexToECDSA error: ", err)
 	}

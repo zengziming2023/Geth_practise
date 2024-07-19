@@ -7,6 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/golang/glog"
+	"main/main/constant"
 )
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
 	glog.Info("Starting Eth Transfer...")
 	defer glog.Info("Stopping Eth Transfer...")
 	// "https://rinkeby.infura.io/v3/e732e9f17ce2413c884fa5b4a6960ee3"
-	client, err := ethclient.Dial("https://sepolia.infura.io/v3/e732e9f17ce2413c884fa5b4a6960ee3")
+	client, err := ethclient.Dial(constant.SepoliaTest)
 	if err != nil {
 		glog.Info("dial error: ", err)
 	}
