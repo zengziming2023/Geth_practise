@@ -6,6 +6,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/golang/glog"
+	"main/main/constant"
 	"time"
 )
 
@@ -16,7 +17,7 @@ func main() {
 	defer glog.Flush()
 
 	// websocket RPC https://sepolia.infura.io/v3/e732e9f17ce2413c884fa5b4a6960ee3
-	client, err := ethclient.Dial("wss://sepolia.infura.io/ws/v3/e732e9f17ce2413c884fa5b4a6960ee3")
+	client, err := ethclient.Dial(constant.SepoliaTestRPC)
 	if err != nil {
 		glog.Fatal("dial: ", err)
 	}
