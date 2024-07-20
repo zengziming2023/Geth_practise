@@ -76,7 +76,7 @@ func main() {
 	// transfer to who
 	toAddress := common.HexToAddress("0x4592d8f8d7b001e72cb26a73e4fa1806a51ac79d")
 	// token address
-	tokenContractAddr := common.HexToAddress("0x28b149020d2152179873ec60bed6bf7cd705775d")
+	tokenContractAddr := common.HexToAddress(constant.Erc20ContractAddr)
 
 	transferFnSignature := []byte("transfer(address,uint256)")
 	hash := sha3.NewLegacyKeccak256()
