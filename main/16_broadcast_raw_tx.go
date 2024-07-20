@@ -2,18 +2,16 @@ package main
 
 import (
 	"encoding/hex"
-	"flag"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/golang/glog"
 	"main/main/constant"
+	"main/main/util"
 )
 
 func main() {
-	flag.Parse()
-	flag.Set("logtostderr", "true")
-	flag.Set("v", "4") // 设置日志级别
+	util.GlogInit()
 	defer glog.Flush()
 
 	glog.Info("Starting Eth Transfer...")

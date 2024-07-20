@@ -3,20 +3,18 @@ package main
 import (
 	"context"
 	"crypto/ecdsa"
-	"flag"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/golang/glog"
 	"main/main/constant"
+	"main/main/util"
 	"math"
 	"math/big"
 )
 
 func main() {
-	flag.Parse()
-	flag.Set("logtostderr", "true")
-	flag.Set("v", "4") // 设置日志级别
+	util.GlogInit()
 	defer glog.Flush()
 
 	client, err := ethclient.Dial(constant.SepoliaTest)

@@ -2,18 +2,16 @@ package main
 
 import (
 	"context"
-	"flag"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/golang/glog"
 	"main/main/constant"
+	"main/main/util"
 	"time"
 )
 
 func main() {
-	flag.Parse()
-	flag.Set("logtostderr", "true")
-	flag.Set("v", "4") // 设置日志级别
+	util.GlogInit()
 	defer glog.Flush()
 
 	// websocket RPC https://sepolia.infura.io/v3/e732e9f17ce2413c884fa5b4a6960ee3

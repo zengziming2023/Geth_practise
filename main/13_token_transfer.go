@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"crypto/ecdsa"
-	"flag"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -13,14 +12,13 @@ import (
 	"github.com/golang/glog"
 	"golang.org/x/crypto/sha3"
 	"main/main/constant"
+	"main/main/util"
 	"math"
 	"math/big"
 )
 
 func main() {
-	flag.Parse()
-	flag.Set("logtostderr", "true")
-	flag.Set("v", "4") // 设置日志级别
+	util.GlogInit()
 	defer glog.Flush()
 
 	glog.Info("Starting token Transfer...")

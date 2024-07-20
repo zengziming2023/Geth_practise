@@ -3,17 +3,15 @@ package main
 import (
 	"context"
 	"encoding/hex"
-	"flag"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/golang/glog"
 	"main/main/constant"
+	"main/main/util"
 )
 
 func main() {
-	flag.Parse()
-	flag.Set("logtostderr", "true")
-	flag.Set("v", "4") // 设置日志级别
+	util.GlogInit()
 	defer glog.Flush()
 
 	client, err := ethclient.Dial(constant.SepoliaTest)
